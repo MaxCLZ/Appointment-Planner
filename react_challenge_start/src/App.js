@@ -1,14 +1,11 @@
-import React from "react";
 import { Switch, Route, Redirect, NavLink } from "react-router-dom";
-
+import React, { useState } from "react";
 import { AppointmentsPage } from "./containers/appointmentsPage/AppointmentsPage";
 import { ContactsPage } from "./containers/contactsPage/ContactsPage";
 
 function App() {
-  /*
-  Define state variables for 
-  contacts and appointments 
-  */
+  const [contacts, setContacts] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
   const ROUTES = {
     CONTACTS: "/contacts",
@@ -19,7 +16,31 @@ function App() {
   Implement functions to add data to
   contacts and appointments
   */
+  const addContact = (newName, newPhoneNumber, newEmail) => {
+    setContacts((prevContact) => [
+      { name: newName, phoneNumber: newPhoneNumber, email: newEmail },
+      ...prevContact,
+    ]);
+  };
+  const addAppointments = (newTitle, newContact, newDate) => {
+    setAppointments((prevAppointments) => [
+      {
+        title: newTitle,
+        contact: newContact,
+        date: newDate,
+      },
+      ...prevAppointments,
+    ]);
+  };
+  // const addContact = (name, phone, email) => {
+  //   const contact = { name, phone, email };
+  //   setContacts((prev) => [...prev, contact]);
+  // };
 
+  // const addAppointments = (title, contact, date, time) => {
+  //   const appointment = { title, contact, date, time };
+  //   setAppointments((prev) => [...prev, appointment]);
+  // };
   return (
     <>
       <nav>
@@ -36,12 +57,16 @@ function App() {
             <Redirect to={ROUTES.CONTACTS} />
           </Route>
           <Route path={ROUTES.CONTACTS}>
-             {/* Add props to ContactsPage */}
-            <ContactsPage />
+            {/* Add props to ContactsPage */}
+            <ContactsPage contacts={contacts} addContact={addContact} />
           </Route>
           <Route path={ROUTES.APPOINTMENTS}>
             {/* Add props to AppointmentsPage */}
-            <AppointmentsPage />
+            <AppointmentsPage
+              appointments={appointments}
+              addAppointments={addAppointments}
+              contacts={contacts}
+            />
           </Route>
         </Switch>
       </main>
